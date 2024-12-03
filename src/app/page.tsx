@@ -4,11 +4,19 @@ export default function Home() {
       style={{
         height: "100vh",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <p>{"Coucou cha' <3"}</p>
+      <p>{"Coucou cha <3"}</p>
+      <p>{"Je t'aime"}</p>
+      <div>
+        <img
+          src="https://i.pinimg.com/originals/01/6c/c8/016cc8a0e4c93e07a1063b485dcc221a.gif"
+          alt="love"
+        />
+      </div>
     </div>
   );
 }
