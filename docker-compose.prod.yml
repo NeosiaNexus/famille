@@ -7,7 +7,8 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
 
@@ -33,9 +34,20 @@ services:
       - famille_public_network
 
   db:
-    ports: [] # Pas de ports exposés en production
+    image: postgres:15
+    container_name: famille_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - famille_internal_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   traefik:
     image: traefik:v2.5
@@ -58,3 +70,9 @@ services:
       - ./letsencrypt:/letsencrypt
     networks:
       - famille_public_network
+
+networks:
+  famille_public_network:
+    external: true
+  famille_internal_network:
+    external: true
