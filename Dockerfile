@@ -1,20 +1,21 @@
-# Étape 1 : Utilisation d'une image Node.js pour builder
+# Étape 1 : Construction de l'application
 FROM node:20-alpine AS builder
 
 # Définit le répertoire de travail
 WORKDIR /app
 
-# Copie les fichiers package.json et package-lock.json uniquement
+# Copie les fichiers de configuration
 COPY package*.json ./
 
-# Installer uniquement les dépendances nécessaires à la construction
-RUN npm ci
+# Installer les dépendances
+# Si package-lock.json n'existe pas, fallback vers npm install
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
-# Copie les fichiers nécessaires pour Prisma et l'application
+# Copie Prisma et .env
 COPY prisma ./prisma
 COPY .env ./
 
-# Génère le client Prisma
+# Génération du client Prisma
 RUN npx prisma generate
 
 # Copie tout le code source
@@ -23,27 +24,19 @@ COPY . .
 # Build l'application
 RUN npm run build
 
-# Étape 2 : Préparer l'image finale pour la production
-FROM node:20-slim
+# Étape 2 : Image finale pour la production
+FROM node:20-alpine
 
 # Définit le répertoire de travail
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires depuis l'étape builder
+# Copie les fichiers nécessaires depuis l'étape builder
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env ./.env
-
-# Installer uniquement les dépendances nécessaires en production
-RUN npm ci --omit=dev
-
-# Supprimer les fichiers inutiles pour réduire la taille de l'image
-RUN rm -rf /tmp && \
-    rm -rf /usr/share/doc && \
-    rm -rf /usr/share/man
 
 # Déclare le port exposé
 EXPOSE 3000
