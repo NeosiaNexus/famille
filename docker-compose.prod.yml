@@ -27,11 +27,13 @@ services:
       - "traefik.docker.network=famille_public_network"
 
       # Application Port
-      - "traefik.port=3000"
+      - "traefik.http.services.famille_app.loadbalancer.server.port=3000"
 
     networks:
       - famille_internal_network
       - famille_public_network
+    expose:
+      - "3000:3000"
 
   db:
     image: postgres:15
