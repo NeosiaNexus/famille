@@ -1,5 +1,5 @@
 # Étape 1 : Utilisation d'une image Node.js pour builder
-FROM node:20 AS builder
+FROM node:20-alpine AS builder
 
 # Définit le répertoire de travail
 WORKDIR /app
@@ -24,7 +24,7 @@ COPY . .
 RUN npm run build
 
 # Étape 2 : Préparer l'image finale
-FROM node:20
+FROM node:20-alpine
 
 # Définit le répertoire de travail
 WORKDIR /app
