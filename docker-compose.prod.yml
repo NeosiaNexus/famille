@@ -27,7 +27,7 @@ services:
       - "traefik.docker.network=famille_public_network"
 
       # Application Port
-      - "traefik.http.services.famille_app.loadbalancer.server.port=3000"
+      - "traefik.port=3000"
 
     networks:
       - famille_internal_network
