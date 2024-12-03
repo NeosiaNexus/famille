@@ -73,6 +73,8 @@ services:
 
 networks:
   famille_public_network:
-    external: true
+    driver: bridge
+    name: famille_public_network
   famille_internal_network:
-    external: true
+    driver: bridge
+    name: famille_internal_network
