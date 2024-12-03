@@ -1,0 +1,40 @@
+# docker-compose.yml
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: famille_app
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
+    volumes:
+      - famille_app_data:/app
+    networks:
+      - famille_internal_network
+      - famille_public_network
+
+  db:
+    image: postgres:15
+    container_name: famille_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - famille_db_data:/var/lib/postgresql/data
+    networks:
+      - famille_internal_network
+
+volumes:
+  famille_db_data:
+  famille_app_data:
+
+networks:
+  famille_public_network:
+    driver: bridge
+  famille_internal_network:
+    driver: bridge

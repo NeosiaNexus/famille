@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: famille_app
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+
+      # HTTPS Router
+      - "traefik.http.routers.famille_app.rule=Host(`famille.matheo-olsen.fr`)"
+      - "traefik.http.routers.famille_app.entrypoints=websecure"
+      - "traefik.http.routers.famille_app.tls.certresolver=myresolver"
+
+      # HTTP to HTTPS Redirection
+      - "traefik.http.routers.famille_app-http.rule=Host(`famille.matheo-olsen.fr`)"
+      - "traefik.http.routers.famille_app-http.entrypoints=web"
+      - "traefik.http.routers.famille_app-http.middlewares=redirect-https"
+      - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
+
+      # Traefik Network
+      - "traefik.docker.network=famille_public_network"
+
+      # Application Port
+      - "traefik.http.services.famille_app.loadbalancer.server.port=3000"
+
+    networks:
+      - famille_internal_network
+      - famille_public_network
+
+  db:
+    ports: [] # Pas de ports exposés en production
+    networks:
+      - famille_internal_network
+
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=devneosianexus@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - famille_public_network

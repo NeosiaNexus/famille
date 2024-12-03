@@ -1,0 +1,17 @@
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer:4
+    container_name: famille_adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+    networks:
+      - famille_internal_network
+    ports:
+      - "8080:8080"
