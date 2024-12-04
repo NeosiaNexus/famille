@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # Installer les dépendances
 # Si package-lock.json n'existe pas, fallback vers npm install
-RUN npm ci --omit=dev || npm install --omit=dev && npm cache clean --force
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # Copie Prisma et .env
 COPY prisma ./prisma
