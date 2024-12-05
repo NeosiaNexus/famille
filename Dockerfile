@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Installer les dépendances
-RUN if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi && npm cache clean --force
+RUN if [ -f package-lock.json ]; then npm ci --legacy-peer-deps || npm install --legacy-peer-deps; else npm install --legacy-peer-deps; fi && npm cache clean --force
 
 # Copie Prisma et .env
 COPY prisma ./prisma
