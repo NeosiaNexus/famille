@@ -34,6 +34,8 @@ model User {
   updatedAt DateTime @updatedAt
 
   sessions Session[]
+  family   UserFamily[]
+  events   FamilyEventParticipant[]
 }
 
 model Session {
@@ -43,4 +45,63 @@ model Session {
 
   userId String
   user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model UserFamily {
+  id String @id @default(cuid())
+
+  role Role @default(USER)
+
+  userId String
+  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  familyId String
+  family   Family @relation(references: [id], fields: [familyId], onDelete: Cascade)
+
+  @@unique([userId, familyId])
+}
+
+model Family {
+  id String @id @default(cuid())
+
+  name        String
+  description String?
+
+  members UserFamily[]
+  events  FamilyEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FamilyEventParticipant {
+  id String @id @default(cuid())
+
+  eventId String
+  event   FamilyEvent @relation(references: [id], fields: [eventId], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, userId])
+}
+
+model FamilyEvent {
+  id String @id @default(cuid())
+
+  title       String
+  description String?
+  date        DateTime @default(now())
+  location    String?
+
+  participants FamilyEventParticipant[]
+
+  familyId String
+  family   Family @relation(references: [id], fields: [familyId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
