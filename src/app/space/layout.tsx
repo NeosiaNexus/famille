@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-import { SideBar, Navbar } from "@/components";
+import { Navbar, SideBar } from "@/components";
 
 export const metadata: Metadata = {
   title: "MaFamille",

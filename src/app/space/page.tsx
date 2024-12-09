@@ -1,15 +1,15 @@
 "use client";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useAuth } from "@/hooks/useAuth";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { MdEventAvailable, MdFamilyRestroom, MdGroupAdd } from "react-icons/md";
-import { DialogCreateFamily, StatCard } from "@/components";
-import { Button } from "@/components/ui/button";
-import { FaInfo } from "react-icons/fa";
-import { Family } from "@prisma/client";
 import getUserFamilies from "@/actions/get-user-families-action";
+import { DialogCreateFamily, StatCard } from "@/components";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { Family } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FaInfo } from "react-icons/fa";
+import { MdEventAvailable, MdFamilyRestroom, MdGroupAdd } from "react-icons/md";
 
 export default function SpacePage() {
   const { user, loading, checkAuth } = useAuth();

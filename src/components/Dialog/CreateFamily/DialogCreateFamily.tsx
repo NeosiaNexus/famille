@@ -1,5 +1,5 @@
 "use client";
-
+import createFamily from "@/actions/create-family-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import React, { useState } from "react";
+import { toast } from "sonner";
 
 interface StatCardProps {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ interface StatCardProps {
 
 type FormDataType = {
   name: string;
-  description?: string;
+  description: string;
 };
 
 const DialogCreateFamily: React.FC<StatCardProps> = ({ children }) => {
@@ -28,9 +29,35 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({ children }) => {
     name: "",
     description: "",
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const finalFormData = new FormData();
+
+    finalFormData.append("name", formData.name);
+    finalFormData.append("description", formData.description);
+
+    setLoading(true);
+
+    createFamily(finalFormData)
+      .then((family) => {
+        // TODO : Redirect to the family page
+        toast.success(`La famille ${family.name} a été créée avec succès !`);
+      })
+      .catch((error) => {
+        if (error instanceof Error) toast.error(error.message);
+        else
+          toast.error(
+            "Une erreur est survenue lors de la création de la famille",
+          );
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -68,7 +95,11 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({ children }) => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" className={"bg-blue-700"}>
+          <Button
+            type="button"
+            className={"bg-blue-700"}
+            onClick={handleSubmit}
+          >
             Créer
           </Button>
         </DialogFooter>

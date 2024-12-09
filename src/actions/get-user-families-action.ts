@@ -1,8 +1,8 @@
 "use server";
 
-import { Family, User } from "@prisma/client";
-import prisma from "@/lib/prisma";
 import { ActionError } from "@/actions/ActionError";
+import prisma from "@/lib/prisma";
+import { Family, User } from "@prisma/client";
 
 export default async function getUserFamilies(
   userId: User["id"],

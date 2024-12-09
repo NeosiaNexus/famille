@@ -10,8 +10,8 @@ import bcrypt from "bcrypt";
 
 import { RegisterSchema } from "@/schema/RegisterSchema";
 
-import { cookieSet, createSession, generateSessionToken } from "@/lib/auth";
 import { errorResponse, successResponse } from "@/lib/api";
+import { cookieSet, createSession, generateSessionToken } from "@/lib/auth";
 import { checkPasswordStrength } from "@/lib/checkPassword";
 import prisma from "@/lib/prisma";
 

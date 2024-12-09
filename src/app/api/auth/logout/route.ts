@@ -1,10 +1,10 @@
 "use server";
 
-import { NextRequest } from "next/server";
 import { errorResponse, successResponse } from "@/lib/api";
 import { invalidateSession } from "@/lib/auth";
-import { encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeHexLowerCase } from "@oslojs/encoding";
+import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {

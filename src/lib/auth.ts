@@ -1,10 +1,10 @@
+import prisma from "@/lib/prisma";
+import { sha256 } from "@oslojs/crypto/sha2";
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from "@oslojs/encoding";
-import { sha256 } from "@oslojs/crypto/sha2";
 import { Session, User } from "@prisma/client";
-import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 const SESSION_DURATION_MS = 15 * 24 * 60 * 60 * 1000;

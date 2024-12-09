@@ -1,11 +1,11 @@
 "use server";
 
 import { User } from "@prisma/client";
-import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
+import { NextRequest } from "next/server";
 
-import { cookieSet, createSession, generateSessionToken } from "@/lib/auth";
 import { errorResponse, successResponse } from "@/lib/api";
+import { cookieSet, createSession, generateSessionToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 interface BodyProps {
