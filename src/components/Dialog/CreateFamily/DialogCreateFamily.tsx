@@ -57,15 +57,19 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({ children }) => {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
+            <Label htmlFor="description" className="text-right">
               Description
             </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+            <Input
+              id="description"
+              value={formData.description}
+              className="col-span-3"
+            />
           </div>
         </div>
         <DialogFooter>
           <Button type="submit" className={"bg-blue-700"}>
-            Save changes
+            Créer
           </Button>
         </DialogFooter>
       </DialogContent>
