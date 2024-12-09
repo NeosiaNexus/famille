@@ -1,11 +1,10 @@
 import React from "react";
 
 import type { Metadata } from "next";
-import {
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import CustomSidebarTrigger from "@/components/CustomSidebarTrigger";
+
+import { SidebarProvider } from "@/components/ui/sidebar";
+
+import { SideBar, Navbar } from "@/components";
 
 export const metadata: Metadata = {
   title: "MaFamille",
@@ -19,10 +18,16 @@ export default function SpaceLayout({
 }>) {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <SideBar />
       <main>
-        <CustomSidebarTrigger />
-        <div className={"w-screen h-screen overflow-x-hidden overflow-y-auto pl-14 pr-14 pt-3 pb-3"}>{children}</div>
+        <Navbar />
+        <div
+          className={
+            "h-screen w-screen overflow-y-auto overflow-x-hidden pb-3 pl-14 pr-14 pt-3"
+          }
+        >
+          {children}
+        </div>
       </main>
     </SidebarProvider>
   );

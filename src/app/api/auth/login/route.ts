@@ -1,6 +1,6 @@
 "use server";
 
-import {  User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
 

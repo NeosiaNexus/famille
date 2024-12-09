@@ -40,7 +40,7 @@ const useAuthStore = create<AuthStore>((set) => ({
       } else {
         set({ user: null });
       }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       set({ user: null });
     } finally {
@@ -61,7 +61,7 @@ const useAuthStore = create<AuthStore>((set) => ({
       } else {
         toast.error("Une erreur est survenue lors de la déconnexion.");
       }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Erreur lors de la déconnexion.");
     }

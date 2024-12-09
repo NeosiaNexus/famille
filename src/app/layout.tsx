@@ -2,13 +2,32 @@ import React from "react";
 
 import type { Metadata } from "next";
 
+import { Poppins } from "next/font/google";
+
+import { Toaster } from "sonner";
+
 import "./globals.css";
-import {Toaster} from "sonner";
 
 export const metadata: Metadata = {
   title: "MaFamille",
   description: "Gérer facilement votre emplois du temps familial",
 };
+
+const poppins = Poppins({
+  weight: [
+    "100",
+    "200",
+    "300",
+    "300",
+    "400",
+    "500",
+    "600",
+    "700",
+    "800",
+    "900",
+  ],
+  subsets: ["latin"],
+});
 
 export default function RootLayout({
   children,
@@ -17,8 +36,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={"w-screen h-screen overflow-x-hidden overflow-y-auto"}>
-      <Toaster expand={true} richColors={true} />
+      <body
+        className={`${poppins.className} h-screen w-screen overflow-y-auto overflow-x-hidden bg-gray-950`}
+      >
+        <Toaster expand={true} richColors={true} />
         {children}
       </body>
     </html>
