@@ -1,15 +1,11 @@
-import React from "react";
+"use client";
 
-import type { Metadata } from "next";
+import React from "react";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { Navbar, SideBar } from "@/components";
-
-export const metadata: Metadata = {
-  title: "MaFamille",
-  description: "Gérer facilement votre emplois du temps familial",
-};
+import AuthProtection from "@/components/AuthProtection/AuthProtection";
 
 export default function SpaceLayout({
   children,
@@ -17,18 +13,22 @@ export default function SpaceLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider>
-      <SideBar />
-      <main>
-        <Navbar />
-        <div
-          className={
-            "h-screen w-screen overflow-y-auto overflow-x-hidden pb-3 pl-14 pr-14 pt-14"
-          }
-        >
-          {children}
-        </div>
-      </main>
-    </SidebarProvider>
+    <AuthProtection requiredAuth={true}>
+      <SidebarProvider defaultOpen={false}>
+        <SideBar />
+        <main className={"flex justify-center items-center"}>
+          <Navbar />
+          <div
+            className={
+              "w-screen h-screen flex justify-center  overflow-x-hidden"
+            }
+          >
+            <div className={"overflow-y-auto pb-3 pl-14 pr-14 pt-14"}>
+              <>{children}</>
+            </div>
+          </div>
+        </main>
+      </SidebarProvider>
+    </AuthProtection>
   );
 }
