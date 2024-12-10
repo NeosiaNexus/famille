@@ -1,5 +1,5 @@
 # Étape 1 : Construction de l'application
-FROM node:20-alpine AS builder
+FROM node:lts-slim AS builder
 
 # Définit le répertoire de travail
 WORKDIR /app
@@ -24,7 +24,7 @@ COPY . .
 RUN npm run build
 
 # Étape 2 : Image finale pour la production
-FROM node:20-alpine
+FROM node:lts-slim
 
 # Définit le répertoire de travail
 WORKDIR /app
