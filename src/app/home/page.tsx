@@ -56,7 +56,7 @@ export default function SpacePage() {
           <AvatarImage src="/famille.jpg" alt="Image de famille" />
         </Avatar>
         <h3 className={"text-white"}>
-          Bonjour <span className={"text-blue-300"}>{user?.pseudo} !</span>
+          Bonjour <span className={"text-blue-300"}>{user?.pseudo}</span> !
         </h3>
       </div>
       <div className={"flex gap-5"}>
