@@ -10,7 +10,7 @@ interface FamilleItemProps {
 const FamilleItem: React.FC<FamilleItemProps> = ({ family }) => {
   return (
     <Link
-      href={"#"}
+      href={`/home/families/${family.id}`}
       className={"flex flex-col gap-2 bg-gray-700 py-3 px-6 rounded-sm"}
     >
       <div className={"flex flex-row items-center gap-3"}>
