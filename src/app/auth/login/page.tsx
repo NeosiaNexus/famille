@@ -1,6 +1,6 @@
 "use client";
 
-import { ActionError } from "@/actions/ActionError";
+import { ActionError } from "@/actions/utils/ActionError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";

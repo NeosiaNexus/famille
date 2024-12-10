@@ -1,6 +1,6 @@
 "use server";
 
-import { ActionError } from "@/actions/ActionError";
+import { ActionError } from "@/actions/utils/ActionError";
 import prisma from "@/lib/prisma";
 import { Family, Role } from "@prisma/client";
 
