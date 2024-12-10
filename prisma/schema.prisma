@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,6 +10,13 @@ datasource db {
 enum Role {
   ADMIN
   USER
+}
+
+enum InvitationStatus {
+  PENDING
+  CANCELLED_BY_SENDER
+  ACCEPTED
+  DECLINED
 }
 
 model User {
@@ -33,28 +34,31 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sessions   Session[]
-  family     UserFamily[]
-  events     FamilyEventParticipant[]
-  Invitation Invitation[]
+  sessions    Session[]
+  family      UserFamily[]
+  events      FamilyEventParticipant[]
+  sentInvites Invitation[]
 }
 
 model Invitation {
   id String @id @default(cuid())
 
-  message String?
+  message String? @db.Text
 
-  hostUserId String
-  hostUser   User   @relation(references: [id], fields: [hostUserId], onDelete: Cascade)
+  status InvitationStatus @default(PENDING)
 
-  invitedUserId String
-  invitedUser   User   @relation(references: [id], fields: [invitedUserId], onDelete: Cascade)
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
   familyId String
-  family   Family @relation(references: [id], fields: [familyId], onDelete: Cascade)
+  family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  invitedEmail String
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
+
+  @@unique([familyId, invitedEmail])
 }
 
 model Session {
@@ -63,7 +67,7 @@ model Session {
   expiresAt DateTime
 
   userId String
-  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserFamily {
@@ -72,10 +76,10 @@ model UserFamily {
   role Role @default(USER)
 
   userId String
-  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   familyId String
-  family   Family @relation(references: [id], fields: [familyId], onDelete: Cascade)
+  family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
 
   @@unique([userId, familyId])
 }
@@ -86,25 +90,25 @@ model Family {
   name        String
   description String?
 
-  members UserFamily[]
-  events  FamilyEvent[]
+  members     UserFamily[]
+  events      FamilyEvent[]
+  invitations Invitation[]
 
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  Invitation Invitation[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model FamilyEventParticipant {
   id String @id @default(cuid())
 
   eventId String
-  event   FamilyEvent @relation(references: [id], fields: [eventId], onDelete: Cascade)
+  event   FamilyEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   userId String
-  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   @@unique([eventId, userId])
 }
@@ -120,8 +124,8 @@ model FamilyEvent {
   participants FamilyEventParticipant[]
 
   familyId String
-  family   Family @relation(references: [id], fields: [familyId], onDelete: Cascade)
+  family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 }
