@@ -1,8 +1,6 @@
 # Étape 1 : Construction de l'application
 FROM node:20-alpine AS builder
 
-RUN apk add --no-cache openssl1.1-compat
-
 # Définit le répertoire de travail
 WORKDIR /app
 
