@@ -2,7 +2,7 @@
 
 import { ActionError } from "@/actions/ActionError";
 import prisma from "@/lib/prisma";
-import { Family } from "@prisma/client";
+import { Family, Role } from "@prisma/client";
 
 export default async function createFamily(
   formData: FormData,
@@ -13,17 +13,45 @@ export default async function createFamily(
     );
   }
 
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
+  const userId = formData.get("userId") as string | null;
+  const name = formData.get("name") as string | null;
+  const description = formData.get("description") as string | null;
 
-  if (!name) {
+  if (!userId || userId.trim() === "") {
+    throw new ActionError(
+      "L'id de l'utilisateur est requis pour créer une famille.",
+    );
+  }
+
+  if (!name || name.trim() === "") {
     throw new ActionError("Le nom de la famille est requis.");
   }
 
-  return await prisma.family.create({
-    data: {
-      name,
-      description,
-    },
-  });
+  try {
+    const family = await prisma.family.create({
+      data: {
+        name: name.trim(),
+        description: description?.trim() || null,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    await prisma.userFamily.create({
+      data: {
+        userId,
+        familyId: family.id,
+        role: Role.ADMIN,
+      },
+    });
+
+    return family;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    throw new ActionError(
+      "Une erreur est survenue lors de la création de la famille.",
+    );
+  }
 }

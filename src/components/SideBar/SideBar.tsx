@@ -1,4 +1,4 @@
-import { Home, Settings } from "lucide-react";
+import { Home } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,23 +10,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { MdFamilyRestroom } from "react-icons/md";
 
 // Menu items.
 const items = [
   {
     title: "Accueil",
-    url: "/space",
+    url: "/home",
     icon: Home,
   },
   {
-    title: "Connexion",
-    url: "/auth/login",
-    icon: Settings,
-  },
-  {
-    title: "Inscription",
-    url: "/auth/register",
-    icon: Settings,
+    title: "Famille",
+    url: "/home/families",
+    icon: MdFamilyRestroom,
   },
 ];
 
@@ -35,7 +31,7 @@ const SideBar = () => {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Mon espace Famille</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

@@ -1,16 +1,27 @@
 "use server";
 
 import { ActionError } from "@/actions/ActionError";
+import { IFullFamily } from "@/interfaces/IFamily";
 import prisma from "@/lib/prisma";
-import { Family, User } from "@prisma/client";
+import { User } from "@prisma/client";
 
 export default async function getUserFamilies(
   userId: User["id"],
-): Promise<Family[]> {
+): Promise<IFullFamily[]> {
   if (!userId) {
     throw new ActionError(
       "L'id de l'utilisateur est requis pour récupérer ses familles.",
     );
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!currentUser) {
+    throw new ActionError("L'utilisateur n'existe pas.");
   }
 
   return await prisma.family.findMany({
@@ -20,6 +31,10 @@ export default async function getUserFamilies(
           userId,
         },
       },
+    },
+    include: {
+      members: true,
+      events: true,
     },
   });
 }

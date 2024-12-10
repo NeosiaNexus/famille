@@ -85,7 +85,7 @@ export default function RegisterPage() {
     if (!loading) {
       if (user) {
         setRedirecting(true);
-        router.push("/space");
+        router.push("/home");
       } else {
         setRedirecting(false);
       }

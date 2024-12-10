@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 
 import { Toaster } from "sonner";
 
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body
         className={`${poppins.className} h-screen w-screen overflow-y-auto overflow-x-hidden bg-gray-950`}
       >
+        <NextTopLoader color={"#fff"} showSpinner={false} zIndex={10000000} />
         <Toaster expand={true} richColors={true} />
         {children}
       </body>

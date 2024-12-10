@@ -23,7 +23,7 @@ export default function SpaceLayout({
         <Navbar />
         <div
           className={
-            "h-screen w-screen overflow-y-auto overflow-x-hidden pb-3 pl-14 pr-14 pt-3"
+            "h-screen w-screen overflow-y-auto overflow-x-hidden pb-3 pl-14 pr-14 pt-14"
           }
         >
           {children}

@@ -84,7 +84,7 @@ export default function LoginPage() {
     if (!loading) {
       if (user) {
         setRedirecting(true);
-        router.push("/space");
+        router.push("/home");
       } else {
         setRedirecting(false);
       }

@@ -4,12 +4,14 @@ import getUserFamilies from "@/actions/get-user-families-action";
 import { DialogCreateFamily, StatCard } from "@/components";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { Family } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { FaInfo } from "react-icons/fa";
 import { MdEventAvailable, MdFamilyRestroom, MdGroupAdd } from "react-icons/md";
+import { toast } from "sonner";
 
 export default function SpacePage() {
   const { user, loading, checkAuth } = useAuth();
@@ -20,6 +22,15 @@ export default function SpacePage() {
 
   const router = useRouter();
 
+  const handleLoadFamilies = () => {
+    setTimeout(() => {}, 1000);
+    if (!user)
+      return toast.error(
+        "Impossible de charger les familles sans être connecté.",
+      );
+    getUserFamilies(user.id).then((families) => setFamilies(families));
+  };
+
   useEffect(() => {
     if (!loading) {
       if (!user) {
@@ -27,8 +38,7 @@ export default function SpacePage() {
         router.push("/auth/login");
       } else {
         setRedirecting(false);
-        getUserFamilies(user.id).then((families) => setFamilies(families));
-        getUserFamilies(user.id).then((families) => console.log(families));
+        handleLoadFamilies();
       }
     }
   }, [loading, router, user]);
@@ -50,15 +60,24 @@ export default function SpacePage() {
         </h3>
       </div>
       <div className={"flex gap-5"}>
-        <StatCard
-          Icon={MdFamilyRestroom}
-          value={families.length}
-          label={families.length > 1 ? "Familles" : "Famille"}
-        />
-        <StatCard Icon={MdEventAvailable} value={52} label={"Evènements"} />
+        <Suspense
+          fallback={
+            <div>
+              <Skeleton className={"w-32 h-32"} />
+            </div>
+          }
+        >
+          <StatCard
+            Icon={MdFamilyRestroom}
+            value={families.length}
+            label={families.length > 1 ? "Familles" : "Famille"}
+            href={"/home/families"}
+          />
+          <StatCard Icon={MdEventAvailable} value={52} label={"Evènements"} />
+        </Suspense>
       </div>
       <div>
-        <DialogCreateFamily>
+        <DialogCreateFamily onCreateFamily={() => handleLoadFamilies()}>
           <Button className={"w-full bg-blue-700"}>
             <MdGroupAdd /> Créer une famille
           </Button>

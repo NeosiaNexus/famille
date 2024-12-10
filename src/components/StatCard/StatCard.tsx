@@ -1,14 +1,19 @@
+"use client";
+
+import Link from "next/link";
 import React from "react";
 
 interface StatCardProps {
   Icon: React.ElementType;
   value: number;
   label: string;
+  href?: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ label, value, Icon }) => {
+const StatCard: React.FC<StatCardProps> = ({ label, value, Icon, href }) => {
   return (
-    <div
+    <Link
+      href={href || "#"}
       className={
         "flex flex-1 flex-col gap-2 rounded-lg bg-gray-700 p-5 text-white shadow"
       }
@@ -18,7 +23,7 @@ const StatCard: React.FC<StatCardProps> = ({ label, value, Icon }) => {
         <div className={"text-xl"}>{value}</div>
       </div>
       <p className={"uppercase"}>{label}</p>
-    </div>
+    </Link>
   );
 };
 
