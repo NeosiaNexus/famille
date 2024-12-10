@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -5,6 +6,10 @@ export type User = {
   id: string;
   email: string;
   pseudo: string;
+  emailVerified: Date | null;
+  role: Role;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 interface AuthStore {
@@ -44,7 +49,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     } catch (error) {
       set({ user: null });
     } finally {
-      set({ loading: false }); // Fin du chargement
+      setTimeout(() => set({ loading: false }), 1000);
     }
   },
 
