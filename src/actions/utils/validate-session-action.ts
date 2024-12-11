@@ -1,13 +1,13 @@
 "use server";
 
 import { ActionError } from "@/actions/utils/ActionError";
-import { IUserWithUserFamily } from "@/interfaces/IUser";
+import { IUserFamily } from "@/interfaces/IUser";
 import { validateSessionToken } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export default async function validateSession(
   token: string | undefined = cookies().get("session_token")?.value,
-): Promise<Partial<IUserWithUserFamily>> {
+): Promise<Partial<IUserFamily>> {
   try {
     const { user } = await validateSessionToken(token);
     return user;

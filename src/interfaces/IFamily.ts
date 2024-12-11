@@ -1,6 +1,7 @@
-import { Family, FamilyEvent, UserFamily } from "@prisma/client";
+import { IUserFamily } from "@/interfaces/IUser";
+import { Family, FamilyEvent } from "@prisma/client";
 
 export interface IFullFamily extends Family {
-  members: UserFamily[];
+  members: IUserFamily[];
   events: FamilyEvent[];
 }

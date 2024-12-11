@@ -1,4 +1,4 @@
-import { IUserWithUserFamily } from "@/interfaces/IUser";
+import { IUserFamily } from "@/interfaces/IUser";
 import prisma from "@/lib/prisma";
 import { sha256 } from "@oslojs/crypto/sha2";
 import {
@@ -12,7 +12,7 @@ const SESSION_DURATION_MS = 15 * 24 * 60 * 60 * 1000;
 
 export type SessionValidationResult = {
   session: Session;
-  user: Partial<IUserWithUserFamily>;
+  user: Partial<IUserFamily>;
 };
 
 export function generateSessionToken(): string {
