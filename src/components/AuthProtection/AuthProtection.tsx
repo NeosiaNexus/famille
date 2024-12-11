@@ -1,4 +1,4 @@
-import PageLoader from "@/components/PageLoader/PageLoader";
+import { PageLoader } from "@/components";
 import { useAuth } from "@/hooks/useAuth";
 import { Role } from "@prisma/client";
 import { useRouter } from "next/navigation";

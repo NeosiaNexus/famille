@@ -4,8 +4,7 @@ import React from "react";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-import { Navbar, SideBar } from "@/components";
-import AuthProtection from "@/components/AuthProtection/AuthProtection";
+import { AuthProtection, Navbar, SideBar } from "@/components";
 
 export default function SpaceLayout({
   children,

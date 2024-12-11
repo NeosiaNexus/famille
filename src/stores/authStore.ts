@@ -15,21 +15,30 @@ export type User = {
 interface AuthStore {
   user: User | null;
   loading: boolean;
+  isChecking: boolean;
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
+  setIsChecking: (isChecking: boolean) => void;
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
-const useAuthStore = create<AuthStore>((set) => ({
+const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   loading: true,
+  isChecking: false,
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
+  setIsChecking: (isChecking) => set({ isChecking }),
 
   // Vérification d'authentification
   checkAuth: async () => {
-    set({ loading: true }); // Commence le chargement
+    const { isChecking, setIsChecking, setLoading, setUser } = get();
+
+    if (isChecking) return;
+    setIsChecking(true);
+    setLoading(true);
+
     try {
       const response = await fetch("/api/auth/validate", {
         method: "POST",
@@ -41,15 +50,22 @@ const useAuthStore = create<AuthStore>((set) => ({
       if (result.success) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordHash, ...user } = result.user;
-        set({ user: user }); // Met à jour l'utilisateur
+        setUser(user);
       } else {
-        set({ user: null });
+        setUser(null);
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      set({ user: null });
+      setUser(null);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erreur lors de la validation de la session.",
+      );
     } finally {
-      setTimeout(() => set({ loading: false }), 1000);
+      setTimeout(() => {
+        setLoading(false);
+        setIsChecking(false);
+      }, 1000);
     }
   },
 
@@ -66,9 +82,12 @@ const useAuthStore = create<AuthStore>((set) => ({
       } else {
         toast.error("Une erreur est survenue lors de la déconnexion.");
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("Erreur lors de la déconnexion.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erreur lors de la déconnexion.",
+      );
     }
   },
 }));

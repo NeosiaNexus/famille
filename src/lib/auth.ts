@@ -1,17 +1,19 @@
+import { IUserWithUserFamily } from "@/interfaces/IUser";
 import prisma from "@/lib/prisma";
 import { sha256 } from "@oslojs/crypto/sha2";
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from "@oslojs/encoding";
-import { Session, User } from "@prisma/client";
+import { Session } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const SESSION_DURATION_MS = 15 * 24 * 60 * 60 * 1000;
 
-export type SessionValidationResult =
-  | { session: Session; user: Partial<User> }
-  | { session: null; user: null };
+export type SessionValidationResult = {
+  session: Session;
+  user: Partial<IUserWithUserFamily>;
+};
 
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
@@ -39,33 +41,38 @@ export async function createSession(
 }
 
 export async function validateSessionToken(
-  token: string,
+  token?: string,
 ): Promise<SessionValidationResult> {
+  if (!token) {
+    throw new Error("Token de session manquant.");
+  }
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-  const result = await prisma.session.findUnique({
+  const session = await prisma.session.findUnique({
     where: {
       id: sessionId,
     },
     include: {
-      user: true,
+      user: {
+        include: {
+          family: true,
+        },
+      },
     },
   });
 
-  if (!result) {
-    return { session: null, user: null };
-  }
-
-  if (Date.now() >= result.expiresAt.getTime()) {
-    await prisma.session.delete({ where: { id: sessionId } });
-    return { session: null, user: null };
+  if (!session || Date.now() >= session.expiresAt.getTime()) {
+    if (session) {
+      await prisma.session.delete({ where: { id: sessionId } });
+    }
+    throw new Error("Session invalide ou expirée.");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { passwordHash, ...safeUser } = result.user;
+  const { passwordHash, ...safeUser } = session.user;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user, ...safeSession } = result;
+  const { user, ...safeSession } = session;
   const sanitizedSession = {
     ...safeSession,
     user: safeUser,

@@ -2,7 +2,7 @@
 
 import getUserFamilies from "@/actions/get-user-families-action";
 import { FamilleItem } from "@/app/home/families/components";
-import { DialogCreateFamily } from "@/components";
+import { DialogCreateFamily, HeaderHighlight } from "@/components";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { IFullFamily } from "@/interfaces/IFamily";
@@ -58,10 +58,7 @@ export default function FamiliesPage() {
   return (
     <div className={"flex flex-col gap-10"}>
       {/*Header*/}
-      <div className="relative w-fit">
-        <h1 className="text-white text-2xl font-semibold">Mes familles</h1>
-        <div className="w-[110%] bg-blue-700 mt-1 -rotate-3 absolute -top-1 -left-2 h-full -z-10 rounded-sm" />
-      </div>
+      <HeaderHighlight text={"Mes familles"} />
 
       {/*Chragement*/}
       {loadingFamilies && <p>Chargement des familles...</p>}
