@@ -5,7 +5,6 @@ import { FamilleItem } from "@/app/home/families/components";
 import { DialogCreateFamily, HeaderHighlight } from "@/components";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { IFullFamily } from "@/interfaces/IFamily";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdGroupAdd } from "react-icons/md";
@@ -16,7 +15,7 @@ export default function FamiliesPage() {
   const router = useRouter();
 
   const [redirecting, setRedirecting] = useState(true);
-  const [families, setFamilies] = useState<IFullFamily[]>([]);
+  const [families, setFamilies] = useState<any[]>([]);
   const [loadingFamilies, setLoadingFamilies] = useState(false);
 
   const handleLoadFamilies = async () => {
@@ -28,7 +27,7 @@ export default function FamiliesPage() {
     setLoadingFamilies(true);
     try {
       const fetchedFamilies = await getUserFamilies(user.id);
-      setFamilies(fetchedFamilies);
+      setFamilies(fetchedFamilies.family);
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
       toast.error("Une erreur est survenue lors du chargement des familles.");

@@ -1,16 +1,15 @@
 "use client";
 
 import getUserFamilies from "@/actions/get-user-families-action";
-import { DialogCreateFamily, StatCard } from "@/components";
+import {DialogCreateFamily, StatCard} from "@/components";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
-import { Family } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { FaInfo } from "react-icons/fa";
-import { MdEventAvailable, MdFamilyRestroom, MdGroupAdd } from "react-icons/md";
+import {MdEventAvailable, MdFamilyRestroom, MdGroupAdd} from "react-icons/md";
 import { toast } from "sonner";
 
 export default function SpacePage() {
@@ -18,7 +17,7 @@ export default function SpacePage() {
 
   const [redirecting, setRedirecting] = useState<boolean>(true);
 
-  const [families, setFamilies] = useState<Family[]>([]);
+  const [families, setFamilies] = useState<any[]>([]);
 
   const router = useRouter();
 
@@ -28,8 +27,15 @@ export default function SpacePage() {
       return toast.error(
         "Impossible de charger les familles sans être connecté.",
       );
-    getUserFamilies(user.id).then((families) => setFamilies(families));
+    getUserFamilies(user.id).then((userWithFamily) => {
+      console.log(userWithFamily.pseudo);
+      setFamilies(userWithFamily);
+    });
   };
+
+  useEffect(() => {
+    console.log(families);
+  }, [families]);
 
   useEffect(() => {
     if (!loading) {
@@ -69,8 +75,8 @@ export default function SpacePage() {
         >
           <StatCard
             Icon={MdFamilyRestroom}
-            value={families.length}
-            label={families.length > 1 ? "Familles" : "Famille"}
+            value={families.length || 0}
+            label={families?.length > 1 ? "Familles" : "Famille"}
             href={"/home/families"}
           />
           <StatCard Icon={MdEventAvailable} value={52} label={"Evènements"} />

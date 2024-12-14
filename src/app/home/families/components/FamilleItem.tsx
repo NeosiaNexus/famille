@@ -1,13 +1,8 @@
-import { IFullFamily } from "@/interfaces/IFamily";
 import Link from "next/link";
 import React from "react";
 import { MdEventAvailable, MdFamilyRestroom, MdGroups } from "react-icons/md";
 
-interface FamilleItemProps {
-  family: IFullFamily;
-}
-
-const FamilleItem: React.FC<FamilleItemProps> = ({ family }) => {
+const FamilleItem: React.FC<any> = ({ family }) => {
   return (
     <Link
       href={`/home/families/${family.id}`}

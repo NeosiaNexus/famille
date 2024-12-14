@@ -1,12 +1,9 @@
 "use server";
 
 import { ActionError } from "@/actions/utils/ActionError";
-import prisma from "@/lib/prisma";
-import { Family, Role } from "@prisma/client";
+import { FamilyService } from "@/services";
 
-export default async function createFamily(
-  formData: FormData,
-): Promise<Family> {
+export default async function createFamily(formData: FormData): Promise<any> {
   if (!formData) {
     throw new ActionError(
       "Les données du formulaire sont requises pour créer une famille.",
@@ -28,25 +25,11 @@ export default async function createFamily(
   }
 
   try {
-    const family = await prisma.family.create({
-      data: {
-        name: name.trim(),
-        description: description?.trim() || null,
-      },
-      include: {
-        members: true,
-      },
+    return await new FamilyService().createFamily({
+      familyName: name,
+      familyDescription: description,
+      userId,
     });
-
-    await prisma.userFamily.create({
-      data: {
-        userId,
-        familyId: family.id,
-        role: Role.ADMIN,
-      },
-    });
-
-    return family;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {

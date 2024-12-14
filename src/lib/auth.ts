@@ -1,5 +1,5 @@
-import { IUserFamily } from "@/interfaces/IUser";
 import prisma from "@/lib/prisma";
+import { SessionService } from "@/services";
 import { sha256 } from "@oslojs/crypto/sha2";
 import {
   encodeBase32LowerCaseNoPadding,
@@ -12,9 +12,8 @@ const SESSION_DURATION_MS = 15 * 24 * 60 * 60 * 1000;
 
 export type SessionValidationResult = {
   session: Session;
-  user: Partial<IUserFamily>;
+  user: any;
 };
-
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
   crypto.getRandomValues(bytes);
@@ -40,48 +39,27 @@ export async function createSession(
   return session;
 }
 
-export async function validateSessionToken(
-  token?: string,
-): Promise<SessionValidationResult> {
+export async function validateSessionToken(token?: string): Promise<any> {
   if (!token) {
     throw new Error("Token de session manquant.");
   }
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-  const session = await prisma.session.findUnique({
-    where: {
-      id: sessionId,
-    },
-    include: {
-      user: {
-        include: {
-          family: true,
-        },
-      },
-    },
-  });
+  const userSessionFamily = await new SessionService().getSessionByToken(token);
 
-  if (!session || Date.now() >= session.expiresAt.getTime()) {
-    if (session) {
-      await prisma.session.delete({ where: { id: sessionId } });
+  if (
+    !userSessionFamily ||
+    Date.now() >= userSessionFamily.session.expiresAt.getTime()
+  ) {
+    if (userSessionFamily) {
+      await prisma.session.delete({
+        where: { id: userSessionFamily.session.id },
+      });
     }
     throw new Error("Session invalide ou expirée.");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { passwordHash, ...safeUser } = session.user;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user, ...safeSession } = session;
-  const sanitizedSession = {
-    ...safeSession,
-    user: safeUser,
-  };
-
-  return {
-    session: sanitizedSession,
-    user: safeUser,
-  };
+  return userSessionFamily;
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {

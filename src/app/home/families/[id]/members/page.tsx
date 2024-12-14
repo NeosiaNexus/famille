@@ -8,7 +8,6 @@ import {
 } from "@/components";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { IFullFamily } from "@/interfaces/IFamily";
 import { Role } from "@prisma/client";
 import _ from "lodash";
 import { useRouter } from "next/navigation";
@@ -27,7 +26,7 @@ export default function SpecificFamilyMembersPage({
   const { user, loading: userLoading } = useAuth();
 
   const [loading, setLoading] = useState(true);
-  const [family, setFamily] = useState<IFullFamily | null>(null);
+  const [family, setFamily] = useState<any | null>(null);
 
   const router = useRouter();
 
@@ -72,7 +71,7 @@ export default function SpecificFamilyMembersPage({
         {_.map(family.members, (member) => (
           <div key={member.id} className={"bg-gray-700 p-3 rounded-2xl"}>
             <p className={"flex items-center justify-between gap-6 text-white"}>
-              {member.user.pseudo} {user?.id === member.userId && "(Vous)"}
+              {member.pseudo} {user?.id === member.id && "(Vous)"}
               <span
                 className={`${getRoleColor(member.role)} font-light  px-4 py-1 rounded-sm uppercase text-[10px]`}
               >

@@ -59,9 +59,11 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({
     setLoading(true);
 
     createFamily(finalFormData)
-      .then((family) => {
+      .then((response) => {
         // TODO : Redirect to the family page
-        toast.success(`La famille "${family.name}" a été créée avec succès !`);
+        toast.success(
+          `La famille "${response.family.name}" a été créée avec succès !`,
+        );
         setFormData({ name: "", description: "" });
         onCreateFamily();
         setIsModalOpen(false);
