@@ -10,10 +10,6 @@ import { NextResponse } from "next/server";
 
 const SESSION_DURATION_MS = 15 * 24 * 60 * 60 * 1000;
 
-export type SessionValidationResult = {
-  session: Session;
-  user: any;
-};
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
   crypto.getRandomValues(bytes);

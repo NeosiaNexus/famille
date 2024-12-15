@@ -5,6 +5,7 @@ import { FamilleItem } from "@/app/home/families/components";
 import { DialogCreateFamily, HeaderHighlight } from "@/components";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { UserWithFamily } from "@/interfaces";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdGroupAdd } from "react-icons/md";
@@ -15,10 +16,12 @@ export default function FamiliesPage() {
   const router = useRouter();
 
   const [redirecting, setRedirecting] = useState(true);
-  const [families, setFamilies] = useState<any[]>([]);
+  const [userWithFamilies, setUserWithFamilies] =
+    useState<UserWithFamily | null>(null);
   const [loadingFamilies, setLoadingFamilies] = useState(false);
 
-  const handleLoadFamilies = async () => {
+  // Charger les familles
+  const loadFamilies = async () => {
     if (!user) {
       toast.error("Impossible de charger les familles sans être connecté.");
       return;
@@ -27,15 +30,17 @@ export default function FamiliesPage() {
     setLoadingFamilies(true);
     try {
       const fetchedFamilies = await getUserFamilies(user.id);
-      setFamilies(fetchedFamilies.family);
+      setUserWithFamilies(fetchedFamilies);
     } catch (error) {
-      if (error instanceof Error) toast.error(error.message);
-      toast.error("Une erreur est survenue lors du chargement des familles.");
+      const errorMessage =
+        error instanceof Error ? error.message : "Erreur inconnue";
+      toast.error(errorMessage);
     } finally {
       setLoadingFamilies(false);
     }
   };
 
+  // Gestion de l'authentification et redirection
   useEffect(() => {
     if (!loading) {
       if (!user) {
@@ -43,10 +48,10 @@ export default function FamiliesPage() {
         router.push("/auth/login");
       } else {
         setRedirecting(false);
-        handleLoadFamilies();
+        loadFamilies();
       }
     }
-  }, [loading, router, user]);
+  }, [loading, user, router]);
 
   useEffect(() => {
     checkAuth();
@@ -55,38 +60,61 @@ export default function FamiliesPage() {
   if (redirecting) return <div>Redirection...</div>;
 
   return (
-    <div className={"flex flex-col gap-10"}>
-      {/*Header*/}
-      <HeaderHighlight text={"Mes familles"} />
+    <div className="flex flex-col gap-10">
+      <HeaderHighlight text="Mes familles" />
 
-      {/*Chragement*/}
-      {loadingFamilies && <p>Chargement des familles...</p>}
-
-      {/*Si pas de famille*/}
-      {!loadingFamilies && families.length === 0 && (
-        <div className="flex flex-col gap-5">
-          <p className="text-white">Vous n&apos;avez pas encore de familles.</p>
-          <DialogCreateFamily onCreateFamily={() => handleLoadFamilies()}>
-            <Button className={"w-full text-blue-700 bg-white"}>
-              <MdGroupAdd /> Créer une famille
-            </Button>
-          </DialogCreateFamily>
-        </div>
+      {loadingFamilies ? (
+        <p>Chargement des familles...</p>
+      ) : (
+        <FamiliesContent
+          families={userWithFamilies?.families ?? []}
+          onReload={loadFamilies}
+        />
       )}
+    </div>
+  );
+}
 
-      {/*Si famille*/}
-      {!loadingFamilies && families.length > 0 && (
-        <div className="flex flex-col gap-5">
-          <DialogCreateFamily onCreateFamily={() => handleLoadFamilies()}>
-            <Button className={"w-full text-blue-700 bg-white"}>
-              <MdGroupAdd /> Ajouter une famille
-            </Button>
-          </DialogCreateFamily>
-          {families.map((family) => (
-            <FamilleItem family={family} key={family.id} />
-          ))}
-        </div>
-      )}
+// Sous-composant pour le contenu des familles
+function FamiliesContent({
+  families,
+  onReload,
+}: {
+  families: UserWithFamily["families"];
+  onReload: () => void;
+}) {
+  if (families.length === 0) {
+    return <NoFamiliesPlaceholder onCreateFamily={onReload} />;
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      <DialogCreateFamily onCreateFamily={onReload}>
+        <Button className="w-full text-blue-700 bg-white">
+          <MdGroupAdd /> Ajouter une famille
+        </Button>
+      </DialogCreateFamily>
+      {families.map((family) => (
+        <FamilleItem family={family} key={family.id} />
+      ))}
+    </div>
+  );
+}
+
+// Sous-composant pour le placeholder "Pas de familles"
+function NoFamiliesPlaceholder({
+  onCreateFamily,
+}: {
+  onCreateFamily: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-5">
+      <p className="text-white">Vous n&apos;avez pas encore de familles.</p>
+      <DialogCreateFamily onCreateFamily={onCreateFamily}>
+        <Button className="w-full text-blue-700 bg-white">
+          <MdGroupAdd /> Créer une famille
+        </Button>
+      </DialogCreateFamily>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import getFamilyById from "@/actions/get-family-by-id-action";
 import { PageLoader } from "@/components";
 import { buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { FullFamily } from "@/interfaces";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -21,7 +22,7 @@ export default function FamilySpecificPage({
   const { loading: userLoading } = useAuth();
 
   const [loading, setLoading] = useState(true);
-  const [family, setFamily] = useState<any | null>(null);
+  const [family, setFamily] = useState<FullFamily | null>(null);
 
   const router = useRouter();
 
@@ -30,6 +31,7 @@ export default function FamilySpecificPage({
   const fetchFamily = async () => {
     try {
       const fetchedFamily = await getFamilyById(id);
+      console.log(fetchedFamily);
       setFamily(fetchedFamily);
     } catch (error) {
       router.push("/home/families");

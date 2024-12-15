@@ -1,15 +1,16 @@
 "use client";
 
 import getUserFamilies from "@/actions/get-user-families-action";
-import {DialogCreateFamily, StatCard} from "@/components";
+import { DialogCreateFamily, StatCard } from "@/components";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { UserWithFamily } from "@/interfaces";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { FaInfo } from "react-icons/fa";
-import {MdEventAvailable, MdFamilyRestroom, MdGroupAdd} from "react-icons/md";
+import { MdEventAvailable, MdFamilyRestroom, MdGroupAdd } from "react-icons/md";
 import { toast } from "sonner";
 
 export default function SpacePage() {
@@ -17,7 +18,7 @@ export default function SpacePage() {
 
   const [redirecting, setRedirecting] = useState<boolean>(true);
 
-  const [families, setFamilies] = useState<any[]>([]);
+  const [userFamilies, setuserFamilies] = useState<UserWithFamily | null>(null);
 
   const router = useRouter();
 
@@ -28,14 +29,9 @@ export default function SpacePage() {
         "Impossible de charger les familles sans être connecté.",
       );
     getUserFamilies(user.id).then((userWithFamily) => {
-      console.log(userWithFamily.pseudo);
-      setFamilies(userWithFamily);
+      setuserFamilies(userWithFamily);
     });
   };
-
-  useEffect(() => {
-    console.log(families);
-  }, [families]);
 
   useEffect(() => {
     if (!loading) {
@@ -75,8 +71,11 @@ export default function SpacePage() {
         >
           <StatCard
             Icon={MdFamilyRestroom}
-            value={families.length || 0}
-            label={families?.length > 1 ? "Familles" : "Famille"}
+            value={!userFamilies ? 0 : userFamilies?.families.length}
+            label={
+              "Famille" +
+              (userFamilies && userFamilies.families.length > 1 ? "s" : "")
+            }
             href={"/home/families"}
           />
           <StatCard Icon={MdEventAvailable} value={52} label={"Evènements"} />

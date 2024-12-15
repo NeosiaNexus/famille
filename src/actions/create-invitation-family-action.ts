@@ -3,6 +3,6 @@
 export async function createInvitationFamilyAction(
   formData: FormData,
 ): Promise<void> {
-  console.log("createInvitationFamilyAction", formData);
+  console.log(formData);
   return Promise.resolve();
 }
