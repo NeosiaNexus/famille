@@ -31,7 +31,6 @@ export default function FamilySpecificPage({
   const fetchFamily = async () => {
     try {
       const fetchedFamily = await getFamilyById(id);
-      console.log(fetchedFamily);
       setFamily(fetchedFamily);
     } catch (error) {
       router.push("/home/families");
