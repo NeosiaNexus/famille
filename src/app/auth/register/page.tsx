@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 interface RegisterFormProps {
@@ -23,9 +22,7 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  const [redirecting, setRedirecting] = useState<boolean>(false);
-
-  const { user, loading, checkAuth, setUser } = useAuth();
+  const { setUser } = useAuth();
 
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,39 +76,10 @@ export default function RegisterPage() {
     }
   };
 
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (user) {
-        setRedirecting(true);
-        router.push("/home");
-      } else {
-        setRedirecting(false);
-      }
-    }
-  }, [loading, router, user]);
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
   return (
-    <>
-      <p>{redirecting ? "Redirecting..." : "Not redirecting"}</p>
-      {/*<PageLoader loading={loading || redirecting} white />*/}
-      <form
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            top: "80%",
-          }}
-        >
+    <div className={"flex justify-center items-center h-full w-full"}>
+      <form>
+        <div className={"flex flex-col justify-center items-center gap-3"}>
           <Input
             type={"text"}
             name={"pseudo"}
@@ -140,12 +108,12 @@ export default function RegisterPage() {
             onChange={handleChange}
             value={formData.confirmPassword}
           />
-          <Button onClick={handleSubmit}>S&apos;inscrire</Button>
-          <p>
+          <p className={"text-white"}>
             Déjà inscrit ? <Link href={"/auth/login"}>Se connecter</Link>
           </p>
+          <Button onClick={handleSubmit}>S&apos;inscrire</Button>
         </div>
       </form>
-    </>
+    </div>
   );
 }
