@@ -19,10 +19,10 @@ export default function SpaceLayout({
           <Navbar />
           <div
             className={
-              "w-screen h-screen flex justify-center  overflow-x-hidden"
+              "w-screen h-screen flex justify-center overflow-x-hidden"
             }
           >
-            <div className={"overflow-y-auto pb-3 pl-14 pr-14 pt-14"}>
+            <div className={"overflow-y-auto pb-3 pl-14 pr-14 pt-20"}>
               <>{children}</>
             </div>
           </div>

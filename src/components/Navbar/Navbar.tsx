@@ -1,4 +1,5 @@
 import { SideBarTrigger } from "@/components";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -32,10 +33,16 @@ const Navbar = () => {
           >
             <div
               className={
-                "flex flex-col justify-center items-center gap-2 w-fit"
+                "flex flex-col justify-center items-center gap-5 w-fit"
               }
             >
-              <Link href={"/home/profile"}>Mon profil</Link>
+              <Link href={"/home/profile/account"}>Mon profil</Link>
+              <Link
+                href={"/home/profile/notifications"}
+                className={"flex gap-1"}
+              >
+                Notification <Badge variant={"destructive"}>15</Badge>
+              </Link>
               <Button>Déconnexion</Button>
             </div>
           </PopoverContent>
