@@ -64,7 +64,7 @@ const DialogSendJoinInvitationFamily: React.FC<StatCardProps> = ({
 
     setLoading(true);
 
-    createInvitationFamilyAction(finalFormData)
+    createInvitationFamilyAction()
       .then(() => {
         toast.success(
           `L'utilisateur "${formData.invitedEmail}" a été invité avec succès !`,
