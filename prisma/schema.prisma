@@ -57,8 +57,6 @@ model Invitation {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-
-  @@unique([familyId, invitedEmail])
 }
 
 model Session {

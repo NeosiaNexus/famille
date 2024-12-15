@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { REGISTER_USER } from "@/constants/socketChannel";
 import { useAuth } from "@/hooks/useAuth";
+import { socket } from "@/socket";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -57,8 +59,16 @@ export default function RegisterPage() {
         body: JSON.stringify({ pseudo, email, password }),
       });
 
+      const resultJson = await response.json();
+
       if (response.ok) {
-        setUser(await response.json());
+        setUser(resultJson);
+        if (socket && resultJson.id) {
+          socket.emit(REGISTER_USER, {
+            userId: resultJson.id,
+            email: resultJson.email,
+          });
+        }
         toast.success("Inscription réussie.");
         setFormData({
           pseudo: "",
@@ -67,12 +77,13 @@ export default function RegisterPage() {
           confirmPassword: "",
         });
       } else {
-        const data = await response.json();
-        toast.error(data.message || "Erreur lors de l'inscription.");
+        toast.error(resultJson.message || "Erreur lors de l'inscription.");
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("Erreur lors de l'inscription.");
+      toast.error(
+        "Erreur lors de l'inscription. Si le problème persiste, contactez le support.",
+      );
     }
   };
 

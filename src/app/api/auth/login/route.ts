@@ -66,8 +66,8 @@ export async function POST(req: NextRequest) {
     cookieSet(response, sessionToken);
 
     return response;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error(error);
     return errorResponse("Une erreur s'est produite.", 500);
   }
 }

@@ -26,8 +26,8 @@ export async function POST(req: NextRequest) {
     response.cookies.delete("session_token");
 
     return response;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error("Erreur lors de la déconnexion :", error);
     return errorResponse("Erreur interne lors de la déconnexion.", 500);
   }
 }

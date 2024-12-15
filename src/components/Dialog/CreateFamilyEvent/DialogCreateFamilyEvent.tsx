@@ -1,4 +1,5 @@
-import { createInvitationFamilyAction } from "@/actions/create-invitation-family-action";
+"use client";
+import createFamily from "@/actions/create-family-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,75 +12,67 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
-import { sendInvitation } from "@/lib/socket/send/invitation/socket-invitation-utils";
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
 interface StatCardProps {
-  familyId: string;
   children: React.ReactNode;
-  onInviteUser?: () => void;
+  onCreateFamily?: () => void;
 }
 
 type FormDataType = {
-  message: string;
-  invitedEmail: string;
+  name: string;
+  description: string;
 };
 
-const DialogSendJoinInvitationFamily: React.FC<StatCardProps> = ({
-  familyId,
+const DialogCreateFamily: React.FC<StatCardProps> = ({
   children,
-  onInviteUser = () => {},
+  onCreateFamily = () => {},
 }) => {
   const [formData, setFormData] = useState<FormDataType>({
-    message: "",
-    invitedEmail: "",
+    name: "",
+    description: "",
   });
-
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { loading: userLoading, user } = useAuth();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (userLoading || !user)
-      toast.error("Impossible d'envoyer une invitation sans être connecté.");
+      toast.error("Impossible de créer la famille sans être connecté.");
 
     const finalFormData = new FormData();
 
-    finalFormData.append("message", formData.message);
-    finalFormData.append("invitedEmail", formData.invitedEmail);
-    finalFormData.append("senderId", user?.id as string);
-    finalFormData.append("familyId", familyId);
+    finalFormData.append("name", formData.name);
+    finalFormData.append("description", formData.description);
+    finalFormData.append("userId", user?.id as string);
 
     setLoading(true);
 
-    createInvitationFamilyAction(finalFormData)
-      .then((invitation) => {
+    createFamily(finalFormData)
+      .then((response) => {
+        // TODO : Redirect to the family page
         toast.success(
-          `L'utilisateur "${formData.invitedEmail}" a été invité avec succès !`,
+          `La famille "${response.family.name}" a été créée avec succès !`,
         );
-        setFormData({ invitedEmail: "", message: "" });
-        onInviteUser();
-        sendInvitation(invitation.invitedEmail, invitation);
+        setFormData({ name: "", description: "" });
+        onCreateFamily();
         setIsModalOpen(false);
       })
       .catch((error) => {
         if (error instanceof Error) toast.error(error.message);
         else
           toast.error(
-            "Une erreur est survenue lors de l'envoi de l'invitation.",
+            "Une erreur est survenue lors de la création de la famille.",
           );
       })
       .finally(() => setLoading(false));
@@ -92,33 +85,33 @@ const DialogSendJoinInvitationFamily: React.FC<StatCardProps> = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Inviter un membre</DialogTitle>
+          <DialogTitle>Créer une famille</DialogTitle>
           <DialogDescription>
-            Agrandissez votre famille en invitant un nouveau membre.
+            Créez une nouvelle famille, invitez vos proches et gérez facilement
+            votre emploi du temps familial.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="invitedEmail" className="text-right">
-              Email
+            <Label htmlFor="name" className="text-right">
+              Nom
             </Label>
             <Input
-              id="invitedEmail"
-              type={"email"}
-              name={"invitedEmail"}
-              value={formData.invitedEmail}
+              id="name"
+              name={"name"}
+              value={formData.name}
               className="col-span-3"
               onChange={handleChange}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="message" className="text-right">
-              Message
+            <Label htmlFor="description" className="text-right">
+              Description
             </Label>
-            <Textarea
-              id="message"
-              name={"message"}
-              value={formData.message}
+            <Input
+              id="description"
+              name={"description"}
+              value={formData.description}
               className="col-span-3"
               onChange={handleChange}
             />
@@ -141,7 +134,7 @@ const DialogSendJoinInvitationFamily: React.FC<StatCardProps> = ({
             disabled={loading || userLoading}
           >
             {loading && <Loader2 className="animate-spin" />}
-            {loading ? "Invitation en cours..." : "Inviter"}
+            {loading ? "Création en cours..." : "Créer la famille"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -149,4 +142,4 @@ const DialogSendJoinInvitationFamily: React.FC<StatCardProps> = ({
   );
 };
 
-export default DialogSendJoinInvitationFamily;
+export default DialogCreateFamily;

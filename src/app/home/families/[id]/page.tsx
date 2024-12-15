@@ -1,7 +1,11 @@
 "use client";
 
 import getFamilyById from "@/actions/get-family-by-id-action";
-import { DialogSendJoinInvitationFamily, PageLoader } from "@/components";
+import {
+  DialogSendJoinInvitationFamily,
+  HeaderHighlight,
+  PageLoader,
+} from "@/components";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { FullFamily } from "@/interfaces";
@@ -54,7 +58,7 @@ export default function FamilySpecificPage({
   if (loading || !family || userLoading) return <PageLoader loading />;
 
   return (
-    <div className="text-white w-full flex flex-col gap-6">
+    <div className="text-white w-full flex flex-col gap-10">
       <div>
         <h1 className="text-2xl font-semibold text-center">{family.name}</h1>
         <p className={"italic font-sm text-center"}>
@@ -77,6 +81,26 @@ export default function FamilySpecificPage({
             {loading ? <Loader2 className="animate-spin" /> : <HiUserAdd />}
           </Button>
         </DialogSendJoinInvitationFamily>
+      </div>
+      <div className={"flex flex-col gap-6"}>
+        <HeaderHighlight text={"Evènements à venir"} />
+        <div className={"flex flex-col gap-4"}>
+          {family.events.length === 0 ? (
+            <p className={"text-center"}>Aucun évènement à venir.</p>
+          ) : (
+            family.events.map((event) => (
+              <div
+                key={event.id}
+                className={"bg-blue-300 p-3 rounded-2xl flex flex-col gap-3"}
+              >
+                <p className={"text-black text-center"}>
+                  {event.title} - {new Date(event.date).toLocaleDateString()}
+                </p>
+                <p className={"text-center"}>{event.description}</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { REGISTER_USER } from "@/constants/socketChannel";
+import { socket } from "@/socket";
 import { Role } from "@prisma/client";
 import { toast } from "sonner";
 import { create } from "zustand";
@@ -51,6 +53,10 @@ const useAuthStore = create<AuthStore>((set, get) => ({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordHash, ...user } = result.user;
         setUser(user);
+        socket.emit(REGISTER_USER, {
+          userId: user.id,
+          email: user.email,
+        });
       } else {
         setUser(null);
       }

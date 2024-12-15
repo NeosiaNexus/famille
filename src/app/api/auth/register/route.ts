@@ -77,7 +77,6 @@ export async function POST(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.errors[0].message, 400);
     }
-    console.error(error);
     return errorResponse("Une erreur est survenue.", 500);
   }
 }

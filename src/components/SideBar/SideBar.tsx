@@ -1,10 +1,8 @@
 import { Home } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,10 +10,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { FaUser } from "react-icons/fa";
+import { IoIosNotifications } from "react-icons/io";
 import { MdFamilyRestroom } from "react-icons/md";
 
 // Menu items.
-const items = [
+const famileItems = [
   {
     title: "Accueil",
     url: "/home",
@@ -28,15 +28,28 @@ const items = [
   },
 ];
 
+const monEspaceItems = [
+  {
+    title: "Mon profil",
+    url: "/home/profile",
+    icon: FaUser,
+  },
+  {
+    title: "Mes notifications",
+    url: "/home/profile/notifications",
+    icon: IoIosNotifications,
+  },
+];
+
 const SideBar = () => {
   return (
     <Sidebar>
-      <SidebarContent className={"flex flex-col justify-between"}>
+      <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Mon espace Famille</SidebarGroupLabel>
+          <SidebarGroupLabel className={"uppercase"}>Famille</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {famileItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
@@ -49,9 +62,25 @@ const SideBar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarFooter>
-          <Button>Déconnexion</Button>
-        </SidebarFooter>
+        <SidebarGroup>
+          <SidebarGroupLabel className={"uppercase"}>
+            Mon espace
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {monEspaceItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );
