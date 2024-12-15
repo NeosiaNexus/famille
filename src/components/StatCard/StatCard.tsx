@@ -15,7 +15,7 @@ const StatCard: React.FC<StatCardProps> = ({ label, value, Icon, href }) => {
     <Link
       href={href || "#"}
       className={
-        "flex flex-1 flex-col gap-2 rounded-lg bg-gray-700 p-5 text-white shadow"
+        "flex flex-1 flex-col gap-2 rounded-lg bg-gray-700 p-5 text-white shadow w-full"
       }
     >
       <div className={"flex items-center justify-start gap-3"}>

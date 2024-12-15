@@ -4,11 +4,10 @@ import getUserFamilies from "@/actions/get-user-families-action";
 import { DialogCreateFamily, StatCard } from "@/components";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { UserWithFamily } from "@/interfaces";
 import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaInfo } from "react-icons/fa";
 import { MdEventAvailable, MdFamilyRestroom, MdGroupAdd } from "react-icons/md";
 import { toast } from "sonner";
@@ -61,25 +60,17 @@ export default function SpacePage() {
           Bonjour <span className={"text-blue-300"}>{user?.pseudo}</span> !
         </h3>
       </div>
-      <div className={"flex gap-5"}>
-        <Suspense
-          fallback={
-            <div>
-              <Skeleton className={"w-32 h-32"} />
-            </div>
+      <div className={"flex gap-5 flex-row justify-center flex-wrap "}>
+        <StatCard
+          Icon={MdFamilyRestroom}
+          value={!userFamilies ? 0 : userFamilies?.families.length}
+          label={
+            "Famille" +
+            (userFamilies && userFamilies.families.length > 1 ? "s" : "")
           }
-        >
-          <StatCard
-            Icon={MdFamilyRestroom}
-            value={!userFamilies ? 0 : userFamilies?.families.length}
-            label={
-              "Famille" +
-              (userFamilies && userFamilies.families.length > 1 ? "s" : "")
-            }
-            href={"/home/families"}
-          />
-          <StatCard Icon={MdEventAvailable} value={52} label={"Evènements"} />
-        </Suspense>
+          href={"/home/families"}
+        />
+        <StatCard Icon={MdEventAvailable} value={52} label={"Evènements"} />
       </div>
       <div>
         <DialogCreateFamily onCreateFamily={() => handleLoadFamilies()}>

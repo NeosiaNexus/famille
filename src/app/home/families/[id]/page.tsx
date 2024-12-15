@@ -1,13 +1,15 @@
 "use client";
 
 import getFamilyById from "@/actions/get-family-by-id-action";
-import { PageLoader } from "@/components";
-import { buttonVariants } from "@/components/ui/button";
+import { DialogSendJoinInvitationFamily, PageLoader } from "@/components";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { FullFamily } from "@/interfaces";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { HiUserAdd } from "react-icons/hi";
 import { toast } from "sonner";
 
 interface FamilySpecificPageParams {
@@ -59,12 +61,23 @@ export default function FamilySpecificPage({
           {family.description || "Aucune description disponible"}
         </p>
       </div>
-      <Link
-        href={`/home/families/${id}/members`}
-        className={`${buttonVariants({ variant: "default" })} w-full`}
-      >
-        Voir les membres
-      </Link>
+      <div className={"flex gap-1"}>
+        <Link
+          href={`/home/families/${id}/members`}
+          className={`${buttonVariants({ variant: "default" })} w-full`}
+        >
+          Voir les membres
+        </Link>
+        <DialogSendJoinInvitationFamily familyId={family.id}>
+          <Button
+            variant={"outline"}
+            className={"text-primary"}
+            disabled={loading}
+          >
+            {loading ? <Loader2 className="animate-spin" /> : <HiUserAdd />}
+          </Button>
+        </DialogSendJoinInvitationFamily>
+      </div>
     </div>
   );
 }

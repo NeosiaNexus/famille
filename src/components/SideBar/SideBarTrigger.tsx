@@ -8,7 +8,7 @@ const SideBarTrigger = () => {
   return (
     <button
       onClick={toggleSidebar}
-      className={"fixed left-2 top-2 z-50 rounded-full bg-white p-2 shadow-md"}
+      className={"fixed z-50 rounded-full bg-white p-2 shadow-md"}
     >
       <IoMdMenu className={"text-3xl text-black"} />
     </button>

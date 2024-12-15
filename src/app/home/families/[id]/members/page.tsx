@@ -13,6 +13,7 @@ import { Role } from "@prisma/client";
 import _ from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { HiUserAdd } from "react-icons/hi";
 import { toast } from "sonner";
 
 interface FamilySpecificPageParams {
@@ -83,7 +84,10 @@ export default function SpecificFamilyMembersPage({
           </div>
         ))}
         <DialogSendJoinInvitationFamily familyId={id}>
-          <Button>Inviter un membre</Button>
+          <Button>
+            <HiUserAdd />
+            Inviter un membre
+          </Button>
         </DialogSendJoinInvitationFamily>
       </div>
     </div>

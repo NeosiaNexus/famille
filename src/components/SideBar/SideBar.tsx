@@ -1,8 +1,10 @@
 import { Home } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -29,7 +31,7 @@ const items = [
 const SideBar = () => {
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className={"flex flex-col justify-between"}>
         <SidebarGroup>
           <SidebarGroupLabel>Mon espace Famille</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -47,6 +49,9 @@ const SideBar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarFooter>
+          <Button>Déconnexion</Button>
+        </SidebarFooter>
       </SidebarContent>
     </Sidebar>
   );
