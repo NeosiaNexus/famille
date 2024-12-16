@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "start:with-migrations": "npx prisma migrate deploy && npx prisma generate && npm run build && npm run start"
+    "start:with-migrations": "npx prisma migrate deploy && npx prisma generate && next start"
   },
   "dependencies": {
     "@oslojs/crypto": "^1.0.1",
