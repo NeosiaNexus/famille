@@ -3,9 +3,7 @@
 import { ActionError } from "@/actions/utils/ActionError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { REGISTER_USER } from "@/constants/socketChannel";
 import { useAuth } from "@/hooks/useAuth";
-import { socket } from "@/socket";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -67,13 +65,6 @@ export default function LoginPage() {
       }
 
       setUser(resultJson);
-
-      if (socket && resultJson.id && resultJson.email) {
-        socket.emit(REGISTER_USER, {
-          userId: resultJson.id,
-          email: resultJson.email,
-        });
-      }
 
       toast.success("Connexion réussie !");
     } catch (error) {

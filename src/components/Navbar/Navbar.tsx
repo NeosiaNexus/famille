@@ -7,9 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CUSTOM_NOTIFICATION } from "@/constants/socketChannel";
 import { useAuth } from "@/hooks/useAuth";
-import { socket } from "@/socket";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
@@ -46,15 +44,13 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (socket && user) {
-      socket.on(CUSTOM_NOTIFICATION, () => {
-        getUserInvitationsFamilyAction(user.email).then((invitations) =>
-          setInvitations(
-            invitations.filter((invitation) => invitation.status === "PENDING")
-              .length,
-          ),
-        );
-      });
+    if (user) {
+      getUserInvitationsFamilyAction(user.email).then((invitations) =>
+        setInvitations(
+          invitations.filter((invitation) => invitation.status === "PENDING")
+            .length,
+        ),
+      );
     }
   }, [user]);
 

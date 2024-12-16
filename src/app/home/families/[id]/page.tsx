@@ -82,11 +82,25 @@ export default function FamilySpecificPage({
           </Button>
         </DialogSendJoinInvitationFamily>
       </div>
-      <div className={"flex flex-col gap-6"}>
+      <div className={"flex flex-col gap-10 mt-8"}>
         <HeaderHighlight text={"Evènements à venir"} />
         <div className={"flex flex-col gap-4"}>
           {family.events.length === 0 ? (
-            <p className={"text-center"}>Aucun évènement à venir.</p>
+            <div className={"flex flex-col gap-4"}>
+              <p className={"text-center"}>Aucun évènement à venir.</p>
+              {/*<DialogCreateFamilyEvent>*/}
+              <Button
+                variant={"secondary"}
+                onClick={() =>
+                  toast.info(
+                    "La création d'un évènement familial sera très prochainement disponible",
+                  )
+                }
+              >
+                Créer un évènement
+              </Button>
+              {/*</DialogCreateFamilyEvent>*/}
+            </div>
           ) : (
             family.events.map((event) => (
               <div

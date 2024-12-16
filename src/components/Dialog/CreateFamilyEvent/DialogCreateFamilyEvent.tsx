@@ -1,6 +1,6 @@
 "use client";
-import createFamily from "@/actions/create-family-action";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -12,35 +12,48 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-interface StatCardProps {
+interface DialogCreateFamilyEventProps {
   children: React.ReactNode;
-  onCreateFamily?: () => void;
+  onCreateFamilyEvent?: () => void;
 }
 
 type FormDataType = {
-  name: string;
+  title: string;
   description: string;
+  date: string;
+  location: string;
 };
 
-const DialogCreateFamily: React.FC<StatCardProps> = ({
+const DialogCreateFamilyEvent: React.FC<DialogCreateFamilyEventProps> = ({
   children,
-  onCreateFamily = () => {},
+  onCreateFamilyEvent = () => {},
 }) => {
   const [formData, setFormData] = useState<FormDataType>({
-    name: "",
+    title: "",
     description: "",
+    date: "",
+    location: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { loading: userLoading, user } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -48,34 +61,19 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({
     e.preventDefault();
 
     if (userLoading || !user)
-      toast.error("Impossible de créer la famille sans être connecté.");
+      toast.error("Impossible de créer l'évènement sans être connecté.");
 
     const finalFormData = new FormData();
 
-    finalFormData.append("name", formData.name);
+    finalFormData.append("title", formData.title);
     finalFormData.append("description", formData.description);
-    finalFormData.append("userId", user?.id as string);
+    finalFormData.append("date", formData.date);
+    finalFormData.append("location", formData.location);
 
     setLoading(true);
 
-    createFamily(finalFormData)
-      .then((response) => {
-        // TODO : Redirect to the family page
-        toast.success(
-          `La famille "${response.family.name}" a été créée avec succès !`,
-        );
-        setFormData({ name: "", description: "" });
-        onCreateFamily();
-        setIsModalOpen(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error) toast.error(error.message);
-        else
-          toast.error(
-            "Une erreur est survenue lors de la création de la famille.",
-          );
-      })
-      .finally(() => setLoading(false));
+    // TODO : server action to create event
+    // .finally(() => setLoading(false));
   };
 
   return (
@@ -85,21 +83,22 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Créer une famille</DialogTitle>
-          <DialogDescription>
-            Créez une nouvelle famille, invitez vos proches et gérez facilement
-            votre emploi du temps familial.
+          <DialogTitle className={"text-center"}>
+            Créer un évènement
+          </DialogTitle>
+          <DialogDescription className={"text-center"}>
+            Créez un évènement pour votre famille et invitez vos proches.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Nom
+            <Label htmlFor="title" className="text-right">
+              Titre
             </Label>
             <Input
-              id="name"
-              name={"name"}
-              value={formData.name}
+              id="title"
+              name={"title"}
+              value={formData.title}
               className="col-span-3"
               onChange={handleChange}
             />
@@ -108,13 +107,62 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({
             <Label htmlFor="description" className="text-right">
               Description
             </Label>
-            <Input
+            <Textarea
               id="description"
               name={"description"}
               value={formData.description}
               className="col-span-3"
               onChange={handleChange}
             />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="location" className="text-right">
+              Lieu
+            </Label>
+            <Input
+              id="location"
+              name={"location"}
+              value={formData.location}
+              className="col-span-3"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="date" className="text-right">
+              Date
+            </Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[240px] pl-3 text-left font-normal",
+                    !formData.date && "text-gray-400",
+                  )}
+                >
+                  {formData.date
+                    ? new Date(formData.date).toLocaleDateString()
+                    : "Sélectionnez une date"}
+                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.date ? new Date(formData.date) : undefined}
+                  onSelect={(date) => {
+                    setFormData({
+                      ...formData,
+                      date: date?.toISOString() || "",
+                    });
+                  }}
+                  disabled={(date) =>
+                    date < new Date(new Date().setHours(0, 0, 0, 0))
+                  }
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         <DialogFooter className={"flex flex-row gap-5"}>
@@ -134,7 +182,7 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({
             disabled={loading || userLoading}
           >
             {loading && <Loader2 className="animate-spin" />}
-            {loading ? "Création en cours..." : "Créer la famille"}
+            {loading ? "Création en cours..." : "Créer l'évènement"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -142,4 +190,4 @@ const DialogCreateFamily: React.FC<StatCardProps> = ({
   );
 };
 
-export default DialogCreateFamily;
+export default DialogCreateFamilyEvent;

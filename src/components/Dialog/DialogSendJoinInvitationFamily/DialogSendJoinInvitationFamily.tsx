@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
-import { sendInvitation } from "@/lib/socket/send/invitation/socket-invitation-utils";
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -68,11 +67,10 @@ const DialogSendJoinInvitationFamily: React.FC<StatCardProps> = ({
     createInvitationFamilyAction(finalFormData)
       .then((invitation) => {
         toast.success(
-          `L'utilisateur "${formData.invitedEmail}" a été invité avec succès !`,
+          `L'utilisateur "${invitation.invitedEmail}" a été invité avec succès !`,
         );
         setFormData({ invitedEmail: "", message: "" });
         onInviteUser();
-        sendInvitation(invitation.invitedEmail, invitation);
         setIsModalOpen(false);
       })
       .catch((error) => {

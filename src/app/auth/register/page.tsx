@@ -2,9 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { REGISTER_USER } from "@/constants/socketChannel";
 import { useAuth } from "@/hooks/useAuth";
-import { socket } from "@/socket";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -63,12 +61,6 @@ export default function RegisterPage() {
 
       if (response.ok) {
         setUser(resultJson);
-        if (socket && resultJson.id) {
-          socket.emit(REGISTER_USER, {
-            userId: resultJson.id,
-            email: resultJson.email,
-          });
-        }
         toast.success("Inscription réussie.");
         setFormData({
           pseudo: "",
