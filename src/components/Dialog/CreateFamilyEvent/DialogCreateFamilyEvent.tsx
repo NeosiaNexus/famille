@@ -74,6 +74,8 @@ const DialogCreateFamilyEvent: React.FC<DialogCreateFamilyEventProps> = ({
 
     // TODO : server action to create event
     // .finally(() => setLoading(false));
+
+    onCreateFamilyEvent();
   };
 
   return (
