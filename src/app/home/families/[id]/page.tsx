@@ -6,6 +6,7 @@ import {
   HeaderHighlight,
   PageLoader,
 } from "@/components";
+import DialogCreateFamilyEvent from "@/components/Dialog/CreateFamilyEvent/DialogCreateFamilyEvent";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { FullFamily } from "@/interfaces";
@@ -88,18 +89,11 @@ export default function FamilySpecificPage({
           {family.events.length === 0 ? (
             <div className={"flex flex-col gap-4"}>
               <p className={"text-center"}>Aucun évènement à venir.</p>
-              {/*<DialogCreateFamilyEvent>*/}
-              <Button
-                variant={"secondary"}
-                onClick={() =>
-                  toast.info(
-                    "La création d'un évènement familial sera très prochainement disponible",
-                  )
-                }
-              >
-                Créer un évènement
-              </Button>
-              {/*</DialogCreateFamilyEvent>*/}
+              <DialogCreateFamilyEvent familyId={id}>
+                <Button variant={"secondary"} className={"w-full"}>
+                  Créer un évènement
+                </Button>
+              </DialogCreateFamilyEvent>
             </div>
           ) : (
             family.events.map((event) => (
